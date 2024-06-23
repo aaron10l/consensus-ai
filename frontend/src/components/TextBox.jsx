@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
-import './TextBox.css'; // Import the CSS file for styling
+import React, { useState, useEffect, useRef } from 'react';
+import './TextBox.css';
 
-const TextBox = () => {
+const TextBox = ({ chatHistory, setChatHistory }) => {
     const [prompt, setPrompt] = useState('');
     const [response, setResponse] = useState('');
+    const chatHistoryRef = useRef(null);
+
+    useEffect(() => {
+        if (chatHistoryRef.current) {
+            chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
+        }
+    }, [chatHistory]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -15,12 +22,23 @@ const TextBox = () => {
             body: JSON.stringify({ prompt })
         });
         const data = await res.json();
-        setResponse(`Winner: ${data.winner}\nResponse: ${data.response}`);
+        const newResponse = `${data.response}`;
+
+        setChatHistory([...chatHistory, { role: 'user', content: prompt }, { role: 'assistant', content: newResponse }]);
+        setResponse(newResponse);
+        setPrompt('');
     };
 
     return (
         <div className="textbox-container">
-            <form onSubmit={handleSubmit}>
+            <div className="chat-history" ref={chatHistoryRef}>
+                {chatHistory.map((message, index) => (
+                    <div key={index} className={`message ${message.role}`}>
+                        <p>{message.content}</p>
+                    </div>
+                ))}
+            </div>
+            <form onSubmit={handleSubmit} className="textbox-form">
                 <textarea
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
@@ -29,10 +47,6 @@ const TextBox = () => {
                 />
                 <button type="submit" className="textbox-button">Submit</button>
             </form>
-            <div className="response-container">
-                <h2>Response:</h2>
-                <p>{response}</p>
-            </div>
         </div>
     );
 };

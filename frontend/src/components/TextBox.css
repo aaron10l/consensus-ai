@@ -1,12 +1,62 @@
 .textbox-container {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    justify-content: flex-end;
     align-items: center;
-    margin-top: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.chat-history {
+    flex-grow: 1;
+    width: 1000px;
+    max-width: 100%;
+    height: 400px; /* Set a fixed height */
+    overflow-y: auto;
+    padding: 10px;
+    border: 0px solid #ccc;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    background-color: #1e2021;
+    box-sizing: border-box;
+}
+
+.message {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    width: 100%;
+    color: black;
+    background-color: #4d4d4d;
+    box-sizing: border-box;
+}
+
+.message.user {
+    background-color: #4d4d4d;
+    color: whitesmoke;
+    align-self: flex-start;
+    border-radius: 30px;
+}
+
+.message.assistant {
+    background-color: #1e2021;
+    color: white;
+    align-self: flex-end;
+    border-radius: 30px;
+}
+
+.textbox-form {
+    width: 600px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
 }
 
 .textbox-input {
-    width: 80%;
+    width: 100%;
     height: 150px;
     padding: 10px;
     font-size: 16px;
@@ -14,6 +64,7 @@
     border-radius: 4px;
     resize: none;
     margin-bottom: 10px;
+    box-sizing: border-box;
 }
 
 .textbox-button {
@@ -24,22 +75,23 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    align-self: center;
 }
 
 .textbox-button:hover {
     background-color: #0056b3;
 }
 
-.response-container {
-    width: 80%;
-    margin-top: 20px;
+@media (max-width: 768px) {
+    .chat-history, .textbox-form {
+        width: 90%;
+        max-width: 600px;
+    }
 }
 
-.response-container h2 {
-    margin-bottom: 10px;
-}
-
-.response-container p {
-    white-space: pre-wrap; /* Preserve whitespace formatting */
-    font-family: monospace;
+@media (max-width: 600px) {
+    .chat-history, .textbox-form {
+        width: 95%;
+        max-width: none;
+    }
 }

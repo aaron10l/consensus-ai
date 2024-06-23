@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
   line-height: 1.5;
   font-weight: 400;
 
@@ -11,6 +13,21 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+}
+
+/* // <uniquifier>: Use a unique and descriptive class name
+// <weight>: Use a value from 100 to 900 */
+
+.raleway-font {
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
 }
 
 a {
@@ -31,6 +48,12 @@ body {
 }
 
 h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+#consensus-ai-title {
+  font-family: 'Raleway', sans-serif; /* Use 'Raleway' font */
   font-size: 3.2em;
   line-height: 1.1;
 }

@@ -37,9 +37,9 @@ def get_responses():
 
     # model and numbering:
     numbered_models = {
-        0: 'GPT',
-        1: 'LLaMa',
-        2: 'Claude'
+        1: 'GPT',
+        2: 'LLaMa',
+        3: 'Claude'
     }
     
     for model_name, model_response in responses.items():
