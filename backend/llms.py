@@ -22,7 +22,7 @@ def get_gpt_response(message_history):
 	response = completion.choices[0].message.content
 	return response
 
-def get_llama_response(prompt):
+def get_llama_response(message_history):
 	# Create a Bedrock Runtime client in the AWS Region of your choice.
 	client = boto3.client("bedrock-runtime", 
 					   aws_access_key_id=os.getenv('AWS_ACCESS_KEY'),
@@ -39,7 +39,7 @@ def get_llama_response(prompt):
 	formatted_prompt = f"""
 	<|begin_of_text|>
 	<|start_header_id|>user<|end_header_id|>
-	{prompt}
+	{message_history}
 	<|eot_id|>
 	<|start_header_id|>assistant<|end_header_id|>
 	"""
@@ -67,13 +67,12 @@ def get_llama_response(prompt):
 
 	# Extract and print the response text.
 	response_text = model_response["generation"]
+
+	if isinstance(response_text, list):
+		return response_text[0]['content']
 	return response_text
 
 def get_claude_response(message_history):
-    print("Message history:")
-    for message in message_history:
-        print(message)
-
     client = AnthropicBedrock(
         aws_access_key=os.getenv("AWS_ACCESS_KEY"),
         aws_secret_key=os.getenv("AWS_SECRET_KEY"),
@@ -100,16 +99,11 @@ def get_claude_response(message_history):
     if claude_messages and claude_messages[0]["role"] != "user":
         claude_messages.insert(0, {"role": "user", "content": "Hello"})
 
-    print("Claude messages:")
-    for msg in claude_messages:
-        print(msg)
-
     message = client.messages.create(
         model="anthropic.claude-3-5-sonnet-20240620-v1:0",
         max_tokens=256,
         messages=claude_messages
     )
-    print(f"CLAUDE OUTPUT: {message.content[0].text}")
     return message.content[0].text
 
 def parse_llm_response(response):
@@ -130,6 +124,7 @@ def parse_llm_response(response):
 				continue
 	if not winner:
 		warnings.warn("no valid integer was found in the llms response. default is 1")
+		print("response: {response}")
 		return 1
 	else:
 		return winner

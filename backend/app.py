@@ -46,10 +46,8 @@ def get_responses():
         temp_chat_history = message_history.copy()[:-1]
         temp_chat_history.pop()
         combined_prompt = f"{prompt}\n\nResponses:\n1. {gpt_response}\n2. {llama_response}\n3. {claude_response}\n\nWhich is the best response? Respond with the response number."
+
         temp_chat_history.append({"role": "user", "content": combined_prompt})
-        print("----TEMP HISTORY------------------------------------")
-        for each in temp_chat_history:
-            print(each)
 
         if model_name == 'GPT':
             vote = parse_llm_response(get_gpt_response(temp_chat_history))
@@ -62,14 +60,8 @@ def get_responses():
     
     # Determine the winner
     winner = max(votes, key=votes.get)
-    print("--------------------------------------------------------------------------")
-    print(f"chat history: {message_history}")
-    print("--------------------------------------------------------------------------")
-    print(f"prompt: {combined_prompt}")
-    print(f"winning response: {responses[winner]}")
+
     message_history.append({'role': 'assistant', 'content': responses[winner]})
-    for message in message_history:
-        print(message)
     return jsonify({'winner': winner, 'response': responses[winner]})
 
 if __name__ == '__main__':

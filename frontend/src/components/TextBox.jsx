@@ -26,7 +26,6 @@ const TextBox = ({ chatHistory, setChatHistory }) => {
                 body: JSON.stringify({ prompt })
             });
             const data = await res.json();
-
             setChatHistory([
                 ...chatHistory, 
                 { role: 'user', content: prompt }, 
@@ -38,6 +37,13 @@ const TextBox = ({ chatHistory, setChatHistory }) => {
             // Optionally, you can add error handling here
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSubmit(e);
         }
     };
 
@@ -63,6 +69,7 @@ const TextBox = ({ chatHistory, setChatHistory }) => {
                 <textarea
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     placeholder="Message consensus.ai"
                     className="textbox-input"
                     disabled={isLoading}
@@ -82,3 +89,7 @@ const TextBox = ({ chatHistory, setChatHistory }) => {
 };
 
 export default TextBox;
+
+
+
+
