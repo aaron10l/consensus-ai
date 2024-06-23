@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
-from llms import get_gpt_response, get_llama_response, get_claude_response
+from llms import parse_llm_response, get_gpt_response, get_llama_response, get_claude_response
 
 app = Flask(__name__)
 CORS(app)
@@ -32,7 +32,7 @@ def get_responses():
     votes = {'GPT': 0, 'LLaMa': 0, 'Gemini': 0}
     
     for model_name, model_response in responses.items():
-        combined_prompt = f"Original prompt: {prompt}\n\nResponses:\n1. {gpt_response}\n2. {llama_response}\n3. {claude_response}\n\nWhich is the best response?"
+        combined_prompt = f"Original prompt: {prompt}\n\nResponses:\n1. {gpt_response}\n2. {llama_response}\n3. {claude_response}\n\nWhich is the best response? Respond with a number."
         if model_name == 'GPT':
             vote = get_gpt_response(combined_prompt)
         elif model_name == 'LLaMa':
@@ -44,6 +44,8 @@ def get_responses():
     
     # Determine the winner
     winner = max(votes, key=votes.get)
+    print(f"prompt: {combined_prompt}")
+    print(responses[winner])
     
     return jsonify({'winner': winner, 'response': responses[winner]})
 
