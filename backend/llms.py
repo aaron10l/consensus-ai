@@ -1,4 +1,6 @@
 import os
+import re
+import warnings
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -33,13 +35,17 @@ def parse_llm_response(response):
 	try:
 		winner = int(response)
 	except:
-		words = response.split()
+		pattern = r'[.,\s;]+'
+		words = re.split(pattern, response)
 		for word in words:
 			try:
 				winner = int(word)
+				return winner
 			except:
 				continue
 	if not winner:
-		raise ValueError("no valid integer was found in the llms response.")
+		warnings.warn("no valid integer was found in the llms response. default is 1")
+		return 1
 	else:
 		return winner
+	

@@ -29,23 +29,31 @@ def get_responses():
     }
     
     # Collect votes
-    votes = {'GPT': 0, 'LLaMa': 0, 'Gemini': 0}
+    votes = {'GPT': 0, 'LLaMa': 0, 'Claude': 0}
+
+    # model and numbering:
+    numbered_models = {
+        0: 'GPT',
+        1: 'LLaMa',
+        2: 'Claude'
+    }
     
     for model_name, model_response in responses.items():
-        combined_prompt = f"Original prompt: {prompt}\n\nResponses:\n1. {gpt_response}\n2. {llama_response}\n3. {claude_response}\n\nWhich is the best response? Respond with a number."
+        combined_prompt = f"Original prompt: {prompt}\n\nResponses:\n1. {gpt_response}\n2. {llama_response}\n3. {claude_response}\n\nWhich is the best response? Respond with the response number."
         if model_name == 'GPT':
-            vote = get_gpt_response(combined_prompt)
+            vote = parse_llm_response(get_gpt_response(combined_prompt))
         elif model_name == 'LLaMa':
-            vote = get_llama_response(combined_prompt)
-        elif model_name == 'Gemini':
-            vote = get_claude_response(combined_prompt)
-        
-        votes['GPT'] += 1
+            vote = parse_llm_response(get_llama_response(combined_prompt))
+        elif model_name == 'Claude':
+            vote = parse_llm_response(get_claude_response(combined_prompt))
+
+        votes[numbered_models[vote]] += 1
     
     # Determine the winner
     winner = max(votes, key=votes.get)
+    print("--------------------------------------------------------------------------")
     print(f"prompt: {combined_prompt}")
-    print(responses[winner])
+    print(f"winning response: {responses[winner]}")
     
     return jsonify({'winner': winner, 'response': responses[winner]})
 
