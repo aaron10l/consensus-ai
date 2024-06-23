@@ -3,7 +3,7 @@ import './TextBox.css';
 
 const TextBox = ({ chatHistory, setChatHistory }) => {
     const [prompt, setPrompt] = useState('');
-    const [response, setResponse] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const chatHistoryRef = useRef(null);
 
     useEffect(() => {
@@ -14,38 +14,68 @@ const TextBox = ({ chatHistory, setChatHistory }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const res = await fetch('http://localhost:5000/get-responses', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ prompt })
-        });
-        const data = await res.json();
-        const newResponse = `${data.response}`;
+        if (!prompt.trim() || isLoading) return;
+        
+        setIsLoading(true);
+        try {
+            const res = await fetch('http://localhost:5000/get-responses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt })
+            });
+            const data = await res.json();
 
-        setChatHistory([...chatHistory, { role: 'user', content: prompt }, { role: 'assistant', content: newResponse }]);
-        setResponse(newResponse);
-        setPrompt('');
+            setChatHistory([
+                ...chatHistory, 
+                { role: 'user', content: prompt }, 
+                { role: 'assistant', content: data.response, winner: data.winner }
+            ]);
+            setPrompt('');
+        } catch (error) {
+            console.error('Error:', error);
+            // Optionally, you can add error handling here
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
         <div className="textbox-container">
             <div className="chat-history" ref={chatHistoryRef}>
-                {chatHistory.map((message, index) => (
-                    <div key={index} className={`message ${message.role}`}>
-                        <p>{message.content}</p>
+                {chatHistory.length === 0 ? (
+                    <div className="message system">
+                        <p>What consensus can we draw today?</p>
                     </div>
-                ))}
+                ) : (
+                    chatHistory.map((message, index) => (
+                        <div key={index} className={`message ${message.role}`}>
+                            {message.role === 'assistant' && (
+                                <div className="winner-model">{message.winner}</div>
+                            )}
+                            <p>{message.content}</p>
+                        </div>
+                    ))
+                )}
             </div>
             <form onSubmit={handleSubmit} className="textbox-form">
                 <textarea
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="Enter your prompt"
+                    placeholder="Message consensus.ai"
                     className="textbox-input"
+                    disabled={isLoading}
                 />
-                <button type="submit" className="textbox-button">Submit</button>
+                <button type="submit" className="textbox-button" disabled={isLoading}>
+                    {isLoading ? (
+                        <>
+                            <div className="loading-circle"></div>
+                        </>
+                    ) : (
+                        'Submit'
+                    )}
+                </button>
             </form>
         </div>
     );
