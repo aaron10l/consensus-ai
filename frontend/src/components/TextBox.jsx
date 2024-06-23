@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './TextBox.css';
+import logo from '../../public/logo.png'
 
 const TextBox = ({ chatHistory, setChatHistory }) => {
     const [prompt, setPrompt] = useState('');
@@ -52,7 +53,8 @@ const TextBox = ({ chatHistory, setChatHistory }) => {
             <div className="chat-history" ref={chatHistoryRef}>
                 {chatHistory.length === 0 ? (
                     <div className="message system">
-                        <p>What consensus can we draw today?</p>
+                        <img src={logo} alt="Consensus.ai Logo" className="consensus-logo" />
+                        <p>Let's reach a consensus</p>
                     </div>
                 ) : (
                     chatHistory.map((message, index) => (

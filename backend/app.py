@@ -41,12 +41,17 @@ def get_responses():
         2: 'LLaMa',
         3: 'Claude'
     }
+
+    print(f"Prompt: {prompt}")
+    print("Responses:")
+    for number, model in numbered_models.items():
+        print(f"{number}. {responses[model]}")
     
     for model_name, model_response in responses.items():
         temp_chat_history = message_history.copy()[:-1]
         temp_chat_history.pop()
         combined_prompt = f"{prompt}\n\nResponses:\n1. {gpt_response}\n2. {llama_response}\n3. {claude_response}\n\nWhich is the best response? Respond with the response number."
-
+ 
         temp_chat_history.append({"role": "user", "content": combined_prompt})
 
         if model_name == 'GPT':
