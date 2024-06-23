@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './TextBox.css'; // Import the CSS file for styling
 
 const TextBox = () => {
     const [prompt, setPrompt] = useState('');
@@ -18,17 +19,17 @@ const TextBox = () => {
     };
 
     return (
-        <div>
+        <div className="textbox-container">
             <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
+                <textarea
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder="Enter your prompt"
+                    className="textbox-input"
                 />
-                <button type="submit">Submit</button>
+                <button type="submit" className="textbox-button">Submit</button>
             </form>
-            <div>
+            <div className="response-container">
                 <h2>Response:</h2>
                 <p>{response}</p>
             </div>
